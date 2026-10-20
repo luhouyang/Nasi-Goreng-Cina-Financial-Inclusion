@@ -1,4 +1,4 @@
-
+﻿
 # setup.ps1 — Woodpecker one-shot Windows setup
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
@@ -35,10 +35,10 @@ QWEN_MODEL=qwen3.8-flash
     Write-Host "  ✓ .env already exists, skipping."
 }
 
-if (-not (Test-Path web\.env.local)) {
-    Step "Copying .env → web\.env.local"
-    Copy-Item .env web\.env.local
-}
+# if (-not (Test-Path web\.env.local)) {
+#     Step "Copying .env → web\.env.local"
+#     Copy-Item .env web\.env.local
+# }
 
 # ---- 3. Ollama + models -----------------------------------------------------
 Step "Checking Ollama"
