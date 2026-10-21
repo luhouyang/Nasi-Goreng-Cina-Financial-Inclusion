@@ -3,12 +3,15 @@
 import { useEffect, useState } from "react";
 import { Languages } from "lucide-react";
 import { LANGUAGES, LANG_KEY, getSavedLang } from "@/lib/lang";
+import { LANG_EVENT } from "@/lib/i18n";
 
 export default function LanguageToggle() {
   const [lang, setLang] = useState(null);
 
   useEffect(() => {
-    setLang(getSavedLang());
+    const saved = getSavedLang();
+    setLang(saved);
+    document.documentElement.lang = saved;
   }, []);
 
   function change(e) {
@@ -17,6 +20,8 @@ export default function LanguageToggle() {
       localStorage.setItem(LANG_KEY, next);
     } catch {}
     setLang(next);
+    document.documentElement.lang = next;
+    window.dispatchEvent(new Event(LANG_EVENT));
   }
 
   return (

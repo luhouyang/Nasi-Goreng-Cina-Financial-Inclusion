@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { T, useT } from "@/lib/i18n";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -16,6 +17,7 @@ export default function Dashboard({ initial }) {
   const [idea, setIdea] = useState("");
   const [running, setRunning] = useState(false);
   const router = useRouter();
+  const t = useT();
 
   async function newFromIdea() {
     if (!idea.trim() || running) return;
@@ -51,16 +53,15 @@ export default function Dashboard({ initial }) {
     <main className="mx-auto w-full max-w-6xl px-5 py-12 md:px-10">
       <div className="mb-10">
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-wood-500">
-          Your workspace
+          <T>Your workspace</T>
         </p>
 
         <h1 className="mb-3 text-3xl font-semibold tracking-tight md:text-4xl">
-          Build something worthwhile.
+          <T>Build something worthwhile.</T>
         </h1>
 
         <p className="max-w-2xl text-sm leading-7 text-[var(--muted)]">
-          Explore your business ideas with structured research, financial
-          analysis, strategy and market intelligence.
+          {t("Explore your business ideas with structured research, financial analysis, strategy and market intelligence.")}
         </p>
       </div>
 
@@ -71,9 +72,9 @@ export default function Dashboard({ initial }) {
               <Plus size={18} />
             </span>
             <div>
-              <h2 className="m-0 text-base font-semibold">New business plan</h2>
+              <h2 className="m-0 text-base font-semibold"><T>New business plan</T></h2>
               <p className="m-0 mt-1 text-xs text-[var(--muted)]">
-                Start with a concept. Woodpecker will build the analysis.
+                <T>Start with a concept. Woodpecker will build the analysis.</T>
               </p>
             </div>
           </div>
@@ -84,7 +85,7 @@ export default function Dashboard({ initial }) {
             htmlFor="business-idea"
             className="mb-2 block text-xs font-medium text-[var(--text)]"
           >
-            Describe your business idea
+            <T>Describe your business idea</T>
           </label>
 
           <textarea
@@ -92,14 +93,14 @@ export default function Dashboard({ initial }) {
             value={idea}
             onChange={(e) => setIdea(e.target.value)}
             rows={5}
-            placeholder="For example: A subscription-based platform that helps local businesses manage their inventory..."
+            placeholder={t("For example: A subscription-based platform that helps local businesses manage their inventory...")}
             className="w-full resize-y rounded-xl border border-[var(--border-2)] bg-[var(--bg)] p-4 text-sm leading-6 text-[var(--text)] outline-none transition placeholder:text-[var(--muted)] focus:border-wood-500 focus:ring-2 focus:ring-wood-500/10"
           />
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
             <p className="m-0 flex items-center gap-2 text-xs text-[var(--muted)]">
               <Sparkles size={14} className="text-wood-500" />
-              Multi-agent business analysis
+              <T>Multi-agent business analysis</T>
             </p>
 
             <button
@@ -110,11 +111,11 @@ export default function Dashboard({ initial }) {
               {running ? (
                 <>
                   <LoaderCircle size={16} className="animate-spin" />
-                  Creating...
+                  <T>Creating...</T>
                 </>
               ) : (
                 <>
-                  Generate business plan
+                  <T>Generate business plan</T>
                   <ArrowRight size={16} />
                 </>
               )}
@@ -126,14 +127,14 @@ export default function Dashboard({ initial }) {
       <section className="mt-12">
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <h2 className="m-0 text-lg font-semibold">Your documents</h2>
+            <h2 className="m-0 text-lg font-semibold"><T>Your documents</T></h2>
             <p className="m-0 mt-1 text-xs text-[var(--muted)]">
-              Access and continue your business plans.
+              <T>Access and continue your business plans.</T>
             </p>
           </div>
 
           <span className="rounded-md border border-[var(--border)] px-2.5 py-1 text-xs text-[var(--muted)]">
-            {docs.length} total
+            {docs.length} <T>total</T>
           </span>
         </div>
 
@@ -144,9 +145,9 @@ export default function Dashboard({ initial }) {
               strokeWidth={1.5}
               className="mx-auto mb-4 text-[var(--muted)]"
             />
-            <h3 className="mb-2 text-sm font-semibold">No documents yet</h3>
+            <h3 className="mb-2 text-sm font-semibold"><T>No documents yet</T></h3>
             <p className="m-0 text-xs text-[var(--muted)]">
-              Your generated business plans will appear here.
+              <T>Your generated business plans will appear here.</T>
             </p>
           </div>
         ) : (
@@ -166,10 +167,10 @@ export default function Dashboard({ initial }) {
                     {doc.title}
                   </strong>
                   <span className="mt-2 block text-xs text-[var(--muted)]">
-                    Updated{" "}
+                    <T>Updated</T>{" "}
                     {doc.updatedAt
                       ? new Date(doc.updatedAt).toISOString().slice(0, 10)
-                      : "Recently"}
+                      : t("Recently")}
                   </span>
                 </span>
 
