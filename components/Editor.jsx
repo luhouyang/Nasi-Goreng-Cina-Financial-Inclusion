@@ -42,6 +42,8 @@ import { uid } from "@/lib/blocks";
 import { blocksToMarkdown, download, exportWord } from "@/lib/export";
 import { ForecastCharts } from "@/components/Charts";
 import AgentSidebar from "@/components/AgentSidebar";
+import { getSavedLang } from "@/lib/lang";
+import { T, useT } from "@/lib/i18n";
 
 const INPUT =
   "w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:border-wood-500 focus:ring-2 focus:ring-wood-500/10 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:placeholder:text-stone-500";
@@ -320,7 +322,7 @@ function DocumentBlock({
       )}
       {b.type === "idea" && (
         <>
-          <Badge Icon={Lightbulb}>Idea</Badge>
+          <Badge Icon={Lightbulb}><T>Idea</T></Badge>
           <EditableText b={b} className="text-sm leading-7" {...editProps} />
         </>
       )}
@@ -656,7 +658,7 @@ function DocumentBlock({
                 ) : (
                   <Icon size={14} />
                 )}{" "}
-                {busy === kind ? "Working..." : label}
+                {busy === kind ? "Working..." : <T>{label}</T>}
               </button>
             );
           })}
@@ -667,6 +669,7 @@ function DocumentBlock({
 }
 
 export default function Editor({ doc }) {
+  const t = useT();
   const [title, setTitle] = useState(doc.title);
   const [blocks, setBlocks] = useState(doc.blocks || []);
   const [running, setRunning] = useState({});
@@ -707,7 +710,7 @@ export default function Editor({ doc }) {
       const res = await fetch("/api/agents/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, docId: doc._id }),
+        body: JSON.stringify({ prompt, docId: doc._id, lang: getSavedLang() }),
       });
       if (!res.ok || !res.body)
         throw new Error(`Stream request failed (${res.status})`);
@@ -807,7 +810,7 @@ export default function Editor({ doc }) {
       const res = await fetch("/api/agents/task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ task: TASKS[kind](block), context: title }),
+        body: JSON.stringify({ task: TASKS[kind](block), context: title, lang: getSavedLang() }),
       });
       if (!res.ok || !res.body)
         throw new Error(`Task request failed (${res.status})`);
@@ -945,18 +948,18 @@ export default function Editor({ doc }) {
             className="inline-flex items-center gap-2 text-xs font-medium text-stone-500 hover:text-wood-500 dark:text-stone-400"
           >
             <ArrowLeft size={15} />
-            All documents
+            <T>All documents</T>
           </a>
           <div className="flex min-w-0 items-center gap-2 overflow-x-auto whitespace-nowrap py-1">
             {streaming && (
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-wood-50 px-2.5 py-2 text-xs text-wood-700 dark:bg-wood-900/30 dark:text-wood-300">
                 <Radio size={13} className="animate-pulse" />
-                Live
+                <T>Live</T>
               </span>
             )}
             <button
               className={BUTTON}
-              title="Export Markdown"
+              title={t("Export Markdown")}
               onClick={() =>
                 download(
                   title.replace(/[^\w-]+/g, "_").slice(0, 60) + ".md",
@@ -970,7 +973,7 @@ export default function Editor({ doc }) {
             </button>
             <button
               className={BUTTON}
-              title="Export Word"
+              title={t("Export Word")}
               onClick={() => exportWord(title, blocks)}
             >
               <Download size={14} />
@@ -978,7 +981,7 @@ export default function Editor({ doc }) {
             </button>
             <button
               className={BUTTON}
-              title="Print or save as PDF"
+              title={t("Print or save as PDF")}
               onClick={() => window.print()}
             >
               <Printer size={14} />
@@ -986,14 +989,14 @@ export default function Editor({ doc }) {
             </button>
             <button
               className={BUTTON}
-              title="Open activity"
+              title={t("Open activity")}
               onClick={() => {
                 setConsoleOpen(true);
                 setSidebarTab("activity");
               }}
             >
               <Terminal size={14} />
-              Activity
+              <T>Activity</T>
             </button>
             <button
               className={PRIMARY}
@@ -1006,7 +1009,7 @@ export default function Editor({ doc }) {
               }
             >
               <Play size={14} />
-              Run full plan
+              <T>Run full plan</T>
             </button>
           </div>
         </div>
@@ -1042,7 +1045,7 @@ export default function Editor({ doc }) {
           {blocks.length === 0 && !streaming && (
             <div className={`${PANEL} border-dashed py-12 text-center`}>
               <FileText className="mx-auto mb-3 text-stone-400" size={28} />
-              <p className="text-sm font-medium">This document is empty</p>
+              <p className="text-sm font-medium"><T>This document is empty</T></p>
               <p className={`mt-2 ${MUTED}`}>
                 Run the full plan or add a block below.
               </p>
@@ -1059,7 +1062,7 @@ export default function Editor({ doc }) {
               }
             >
               <Plus size={14} />
-              Paragraph
+              <T>Paragraph</T>
             </button>
             <button
               className={BUTTON}
@@ -1071,7 +1074,7 @@ export default function Editor({ doc }) {
               }
             >
               <Lightbulb size={14} />
-              Idea
+              <T>Idea</T>
             </button>
             <button
               className={BUTTON}
@@ -1083,7 +1086,7 @@ export default function Editor({ doc }) {
               }
             >
               <ListTodo size={14} />
-              Action point
+              <T>Action point</T>
             </button>
           </div>
           <p className={`mt-7 print:hidden ${MUTED}`}>

@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/i18n";
 import {
   Search,
   Scale,
@@ -93,10 +94,10 @@ export default function AgentSidebar({
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[.15em] text-stone-500 dark:text-stone-400">
-            Workspace
+            <T>Workspace</T>
           </p>
           <h2 className="mt-1 text-base font-semibold tracking-tight">
-            Agent activity
+            <T>Agent activity</T>
           </h2>
         </div>
         <span
@@ -107,12 +108,12 @@ export default function AgentSidebar({
           ) : (
             <Circle size={12} />
           )}{" "}
-          {streaming ? "Live" : "Idle"}
+          {streaming ? <T>Live</T> : <T>Idle</T>}
         </span>
       </div>
       <div className="rounded-xl border border-stone-200 bg-stone-50 p-4 dark:border-stone-800 dark:bg-stone-800/60">
         <div className="mb-3 flex justify-between text-xs">
-          <strong>Generation progress</strong>
+          <strong><T>Generation progress</T></strong>
           <span className="font-medium tabular-nums text-wood-600 dark:text-wood-300">
             {completed}/{AGENTS.length}
           </span>
@@ -131,8 +132,8 @@ export default function AgentSidebar({
         </div>
         <p className="mt-3 text-[11px] text-stone-500 dark:text-stone-400">
           {streaming
-            ? `${active} active agents`
-            : "No agents currently running"}
+            ? <>{active} <T>active agents</T></>
+            : <T>No agents currently running</T>}
         </p>
       </div>
       <div className="grid grid-cols-2 gap-1 rounded-lg bg-stone-100 p-1 dark:bg-stone-800">
@@ -150,7 +151,7 @@ export default function AgentSidebar({
             className={`flex items-center justify-center gap-2 rounded-md px-2 py-2 text-xs font-medium ${activeTab === id ? "bg-white text-stone-900 shadow-sm dark:bg-stone-900 dark:text-white" : "text-stone-500 dark:text-stone-400"}`}
           >
             <Icon size={14} />
-            {label}
+            <T>{label}</T>
           </button>
         ))}
       </div>
@@ -171,13 +172,13 @@ export default function AgentSidebar({
                   <a.Icon size={17} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <strong className="block truncate text-xs">{a.name}</strong>
+                  <strong className="block truncate text-xs"><T>{a.name}</T></strong>
                   <span className="mt-1 block text-[11px] text-stone-500 dark:text-stone-400">
                     {a.status === "running"
-                      ? "Generating"
+                      ? <T>Generating</T>
                       : a.status === "complete"
-                        ? "Output available"
-                        : "Waiting"}
+                        ? <T>Output available</T>
+                        : <T>Waiting</T>}
                   </span>
                 </span>
                 {a.status === "running" ? (
@@ -199,7 +200,7 @@ export default function AgentSidebar({
                   <pre className="max-h-36 overflow-auto whitespace-pre-wrap break-words font-mono text-[11px] leading-5 text-stone-600 dark:text-stone-300">
                     {a.preview
                       ? a.preview.slice(-500)
-                      : "Preparing response..."}
+                      : <T>Preparing response...</T>}
                   </pre>
                 </div>
               )}
@@ -209,19 +210,19 @@ export default function AgentSidebar({
       ) : (
         <div className="rounded-xl border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900">
           <div className="flex items-center justify-between border-b border-stone-200 px-3 py-3 dark:border-stone-800">
-            <strong className="text-xs">Execution log</strong>
+            <strong className="text-xs"><T>Execution log</T></strong>
             <button
               type="button"
               className="text-xs text-wood-600 dark:text-wood-300"
               onClick={() => setConsoleOpen(!consoleOpen)}
             >
-              {consoleOpen ? "Hide" : "Show"}
+              {consoleOpen ? <T>Hide</T> : <T>Show</T>}
             </button>
           </div>
           {consoleOpen && (
             <div className="max-h-[450px] space-y-2 overflow-auto p-3">
               {logs.length === 0 ? (
-                <p className="text-xs text-stone-500">No activity yet.</p>
+                <p className="text-xs text-stone-500"><T>No activity yet.</T></p>
               ) : (
                 logs.map((l, i) => (
                   <div
