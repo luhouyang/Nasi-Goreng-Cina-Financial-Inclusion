@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Feather, LogOut, LayoutDashboard } from "lucide-react";
 import { who } from "@/lib/auth";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,7 @@ export default async function AppLayout({ children }) {
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="hidden max-w-56 truncate text-xs text-stone-500 dark:text-stone-400 md:inline">{user?.email || "Guest"}</span>
+          <LanguageToggle />
           <ThemeToggle />
           <form method="post" action="/api/auth/logout">
             <button type="submit" title="Sign out" className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg border border-stone-200 bg-white px-3 text-xs font-medium text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300 dark:hover:bg-stone-800">

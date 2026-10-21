@@ -42,6 +42,7 @@ import { uid } from "@/lib/blocks";
 import { blocksToMarkdown, download, exportWord } from "@/lib/export";
 import { ForecastCharts } from "@/components/Charts";
 import AgentSidebar from "@/components/AgentSidebar";
+import { getSavedLang } from "@/lib/lang";
 
 const INPUT =
   "w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400 outline-none focus:border-wood-500 focus:ring-2 focus:ring-wood-500/10 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:placeholder:text-stone-500";
@@ -707,7 +708,7 @@ export default function Editor({ doc }) {
       const res = await fetch("/api/agents/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, docId: doc._id }),
+        body: JSON.stringify({ prompt, docId: doc._id, lang: getSavedLang() }),
       });
       if (!res.ok || !res.body)
         throw new Error(`Stream request failed (${res.status})`);
@@ -807,7 +808,7 @@ export default function Editor({ doc }) {
       const res = await fetch("/api/agents/task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ task: TASKS[kind](block), context: title }),
+        body: JSON.stringify({ task: TASKS[kind](block), context: title, lang: getSavedLang() }),
       });
       if (!res.ok || !res.body)
         throw new Error(`Task request failed (${res.status})`);

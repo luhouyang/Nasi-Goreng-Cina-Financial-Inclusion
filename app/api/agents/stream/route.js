@@ -2,6 +2,7 @@ import { who } from "@/lib/auth";
 import { db } from "@/lib/mongo";
 import { embed, vectorSearch, qwenJSON, qwenStream, qwenStreamJSON, computeForecast } from "@/lib/qwen";
 import { uid } from "@/lib/blocks";
+import { langInstruction } from "@/lib/lang";
 
 export const dynamic = "force-dynamic";
 const QBASE = () => process.env.QWEN_BASE || "https://maas.qwencloudapi.com/compatible-mode/v1";
@@ -97,7 +98,8 @@ function tryParseJSON(text) {
 export async function POST(req) {
   const user = await who();
   if (!user) return Response.json({ error: "unauthorized" }, { status: 401 });
-  const { prompt, docId } = await req.json();
+  const { prompt, docId, lang } = await req.json();
+  const L = langInstruction(lang);
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -152,13 +154,13 @@ export async function POST(req) {
           try {
             if (agentName === "research") {
               let text = "";
-              for await (const tok of qwenStream({ system, user: userPrompt, search })) {
+              for await (const tok of qwenStream({ system: system + L, user: userPrompt, search })) {
                 text += tok;
                 send("stream_update", { id, text });
               }
               replaceBlock(id, [{ id: uid(), type: "paragraph", text }]);
             } else {
-              const { stream, getAccumulated } = await qwenStreamJSON({ system, user: userPrompt, search, timeout: 90000 });
+              const { stream, getAccumulated } = await qwenStreamJSON({ system: system + L, user: userPrompt, search, timeout: 90000 });
               for await (const { accumulated } of stream) send("stream_update", { id, text: accumulated });
               const final = tryParseJSON(getAccumulated());
               replaceBlock(id, transformFn(final || {}));

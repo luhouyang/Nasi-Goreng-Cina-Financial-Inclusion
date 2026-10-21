@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { who } from '@/lib/auth';
 import { embed, vectorSearch, qwenStream } from '@/lib/qwen';
+import { langInstruction } from '@/lib/lang';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +9,8 @@ export async function POST(req) {
   const user = await who();
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   
-  const { task, context } = await req.json();
+  const { task, context, lang } = await req.json();
+  const L = langInstruction(lang);
 
   // 1. Get context (embed + search)
   const vector = await embed(task).catch(() => null);
@@ -27,7 +29,7 @@ export async function POST(req) {
         
         // Stream tokens from Qwen
         for await (const tok of qwenStream({
-          system: 'You are a focused, human-friendly business assistant. Return STRICT JSON ONLY. No markdown formatting, no bolding, no conversational filler, no code blocks.',
+          system: 'You are a focused, human-friendly business assistant. Return STRICT JSON ONLY. No markdown formatting, no bolding, no conversational filler, no code blocks.' + L,
           user: `TASK: ${task}\nCONTEXT: ${context || ''}\nEVIDENCE: ${JSON.stringify(evidence.map((x) => ({ title: x.title, text: (x.chunk_text || '').slice(0, 800) })))}`,
           search: true,
         })) {
